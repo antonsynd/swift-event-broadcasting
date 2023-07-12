@@ -11,7 +11,7 @@ jobs:
         swift: ["5.8"]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: swift-actions/setup-swift
+      - uses: swift-actions/setup-swift@v1
         with:
           swift-version: ${{ matrix.swift }}
       - name: Build
