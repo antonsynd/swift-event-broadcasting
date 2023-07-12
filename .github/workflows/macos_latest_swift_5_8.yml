@@ -15,6 +15,6 @@ jobs:
         with:
           swift-version: ${{ matrix.swift }}
       - name: Build
-        run: swift build
+        run: ls *
       - name: Run tests
         run: swift test
