@@ -1,0 +1,21 @@
+name: Swift
+
+on: [push]
+
+jobs:
+  build:
+    name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest]
+        swift: ["5.8"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: swift-actions/setup-swift
+        with:
+          swift-version: ${{ matrix.swift }}
+      - name: Build
+        run: swift build
+      - name: Run tests
+        run: swift test
+
