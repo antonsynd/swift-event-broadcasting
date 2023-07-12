@@ -1,6 +1,8 @@
 # swift-event-broadcasting
 
-![Swift workflow badge](https://github.com/antonsynd/swift-event-broadcasting/actions/workflows/swift.yml/badge.svg)
+![macOS (latest), Swift 5.8 workflow badge](https://github.com/antonsynd/swift-event-broadcasting/actions/workflows/macos_latest_swift_5_8.yml/badge.svg)
+
+![Ubuntu (latest), Swift 5.8 workflow badge](https://github.com/antonsynd/swift-event-broadcasting/actions/workflows/ubuntu_latest_swift_5_8.yml/badge.svg)
 
 Event handling implementation for Swift.
 
