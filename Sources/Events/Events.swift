@@ -1,5 +1,5 @@
 //
-//  Event.swift
+//  Events.swift
 //  swift-event-broadcasting
 //
 //  Created by Anton Nguyen on 5/11/23.
@@ -14,16 +14,16 @@ public typealias EventType = String
 
 // @brief An event. This can be subclassed to provide interfaces with data
 // relevant to the event being broadcast.
-public class Event {
+open class Event {
   let eventType: EventType
 
-  init(eventType: EventType) {
+  public init(eventType: EventType) {
     self.eventType = eventType
   }
 
   // @brief Convenience method to prepend the class name to an event type
   // string to prevent name clashes. Optional, but recommended.
-  static func ET(_ eventType: String) -> EventType {
+  public static func ET(_ eventType: String) -> EventType {
     return "\(String(describing: self)):\(eventType)"
   }
 }
@@ -126,11 +126,14 @@ public protocol EventBroadcasting {
 }
 
 // @brief Base class that can be subclassed directly.
-public class EventBroadcaster: EventBroadcasting {
+open class EventBroadcaster: EventBroadcasting {
   private var typeToSubscribers: [EventType: EventSubscribers] = [:]
   private var typeToObjectSubscribers: [EventType: ObjectSubscribers] = [:]
 
   private static let eventQueue = DispatchQueue(label: "com.miod.events")
+
+  public init() {
+  }
 
   public func subscribe(
     to eventType: EventType,
