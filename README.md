@@ -1,5 +1,7 @@
 # swift-event-broadcasting
 
+![Builds](https://github.com/antonsynd/swift-event-broadcaster/actions/workflows/swift.yml/badge.svg)
+
 Event handling implementation for Swift.
 
 ## Basics
