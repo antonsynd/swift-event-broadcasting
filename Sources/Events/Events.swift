@@ -43,7 +43,6 @@ public typealias EventSubscriberId = UInt
 // keep track of subscribers for a particular event type.
 internal class EventSubscribers {
   private var nextSubscriberId: EventSubscriberId = 0
-  // TODO: Replace with DefaultDictionary
   private var subscribers: OrderedDictionary<EventSubscriberId, EventHandler> =
     [:]
 
@@ -69,16 +68,10 @@ internal class EventSubscribers {
 // the EventBroadcaster to keep track of object subscribers for a particular
 // event type.
 internal class ObjectSubscribers {
-  // TODO: Replace with DefaultDictionary
   private var objectsToIds: [AnyHashable: Set<EventSubscriberId>] = [:]
 
   func add(_ subscriber: AnyHashable, withId id: EventSubscriberId) {
-    if objectsToIds.contains(where: { $0.key == subscriber }) {
-      objectsToIds[subscriber]!.insert(id)
-    }
-    else {
-      objectsToIds[subscriber] = [id]
-    }
+    objectsToIds[subscriber, default: []].insert(id)
   }
 
   func remove(_ subscriber: AnyHashable) -> Set<EventSubscriberId>? {
