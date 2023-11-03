@@ -1,32 +1,11 @@
 //
-//  Events.swift
+//  EventBroadcaster.swift
 //  swift-event-broadcasting
 //
-//  Created by Anton Nguyen on 5/11/23.
+//  Created by Anton Nguyen on 11/2/23.
 //
 
-import Collections
 import Foundation
-
-// @brief An event type, indicating a particular situation or use case of an
-// event.
-public typealias EventType = String
-
-// @brief An event. This can be subclassed to provide interfaces with data
-// relevant to the event being broadcast.
-open class Event {
-  let eventType: EventType
-
-  public init(eventType: EventType) {
-    self.eventType = eventType
-  }
-
-  // @brief Convenience method to prepend the class name to an event type
-  // string to prevent name clashes. Optional, but recommended.
-  public static func ET(_ eventType: String) -> EventType {
-    return "\(String(describing: self)):\(eventType)"
-  }
-}
 
 // @brief An event handler, that subscribes to an event type and is invoked
 // when its event broadcaster broadcasts an event with that type.
@@ -37,47 +16,6 @@ public typealias EventHandler = (Event) -> Void
 // with an associated subscriber id, the subscriber id must be used to
 // unsubscribe the handler.
 public typealias EventSubscriberId = UInt
-
-// @brief Maintains subscriber id to event handler relations, and controls
-// the distribution of new subscriber ids. Used by the EventBroadcaster to
-// keep track of subscribers for a particular event type.
-internal class EventSubscribers {
-  private var nextSubscriberId: EventSubscriberId = 0
-  private var subscribers: OrderedDictionary<EventSubscriberId, EventHandler> =
-    [:]
-
-  func add(_ handler: @escaping EventHandler) -> EventSubscriberId {
-    let currentSubscriberId: EventSubscriberId = nextSubscriberId
-    nextSubscriberId += 1
-
-    subscribers[currentSubscriberId] = handler
-
-    return currentSubscriberId
-  }
-
-  func remove(_ subscriber: EventSubscriberId) -> Bool {
-    subscribers.removeValue(forKey: subscriber) != nil
-  }
-
-  func forEach(_ body: (@escaping EventHandler) throws -> Void) throws {
-    try subscribers.values.forEach(body)
-  }
-}
-
-// @brief Maintains object subscribers to subscriber id relations. Used by
-// the EventBroadcaster to keep track of object subscribers for a particular
-// event type.
-internal class ObjectSubscribers {
-  private var objectsToIds: [AnyHashable: Set<EventSubscriberId>] = [:]
-
-  func add(_ subscriber: AnyHashable, withId id: EventSubscriberId) {
-    objectsToIds[subscriber, default: []].insert(id)
-  }
-
-  func remove(_ subscriber: AnyHashable) -> Set<EventSubscriberId>? {
-    return objectsToIds.removeValue(forKey: subscriber)
-  }
-}
 
 // @brief Protocol that allows a class or struct to provide event broadcasting
 // capabilities by keeping an internal instance of EventBroadcaster and
@@ -123,6 +61,9 @@ open class EventBroadcaster: EventBroadcasting {
   private var typeToSubscribers: [EventType: EventSubscribers] = [:]
   private var typeToObjectSubscribers: [EventType: ObjectSubscribers] = [:]
 
+  // TODO: Extract this to a class that can be registered as the
+  // event handler scheduler by the client, but defaults to a DispatchQueue
+  // and has options to have queues per event type.
   private static let eventQueue = DispatchQueue(label: "com.miod.events")
 
   public init() {
