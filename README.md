@@ -4,6 +4,10 @@
 
 ![Ubuntu (latest), Swift 5.8 workflow badge](https://github.com/antonsynd/swift-event-broadcasting/actions/workflows/ubuntu_latest_swift_5_8.yml/badge.svg)
 
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fantonsynd%2Fswift-event-broadcasting%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/antonsynd/swift-event-broadcasting)
+
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fantonsynd%2Fswift-event-broadcasting%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/antonsynd/swift-event-broadcasting)
+
 Event handling implementation for Swift.
 
 ## Basics
@@ -58,7 +62,7 @@ let subscriberId = gpsService.subscribe(to: "locationUpdate") {
 }
 
 // Broadcast
-gpsService.broadcast(Event(eventType: "locationUpdate))
+gpsService.broadcast(Event(eventType: "locationUpdate"))
 // prints "location updated"
 
 // Unsubscribe
@@ -78,7 +82,7 @@ gpsService.subscribe(someHashable, to: "locationUpdate") {
 }
 
 // Broadcast
-gpsService.broadcast(Event(eventType: "locationUpdate))
+gpsService.broadcast(Event(eventType: "locationUpdate"))
 // prints "location updated"
 
 // Unsubscribe
