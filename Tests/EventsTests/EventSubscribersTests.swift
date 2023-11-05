@@ -10,8 +10,6 @@ import XCTest
 @testable import Events
 
 final class EventSubscribersTests: XCTestCase {
-  private let dummyClosure = { (e: Event) in return }
-
   func test_EventSubscribers_add_HasIncreasingSubscriberId() {
     // If
     let es = EventSubscribers()

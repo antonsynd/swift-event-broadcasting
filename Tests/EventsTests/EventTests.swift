@@ -10,15 +10,6 @@ import XCTest
 @testable import Events
 
 final class EventTests: XCTestCase {
-  final class TestEvent: Event {
-    static let FOO = TestEvent.ET("foo")
-    static let BAR = TestEvent.ET("bar")
-
-    init() {
-      super.init(eventType: TestEvent.FOO)
-    }
-  }
-
   func test_Event_eventType() {
     // If
     let e = Event(eventType: "test")

@@ -10,23 +10,6 @@ import XCTest
 @testable import Events
 
 final class EventBroadcasterTests: XCTestCase {
-  final class TestEvent: Event {
-    static let FOO = TestEvent.ET("foo")
-    static let BAR = TestEvent.ET("bar")
-
-    init() {
-      super.init(eventType: TestEvent.FOO)
-    }
-  }
-
-  enum TestEnum {
-    case ABC
-    case JKL
-    case XYZ
-  }
-
-  private let dummyClosure = { (e: Event) in return }
-
   func test_EventBroadcaster_unsubscribe_NonExistentEventType() {
     // If
     let eb = EventBroadcaster()

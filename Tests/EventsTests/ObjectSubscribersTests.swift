@@ -10,15 +10,6 @@ import XCTest
 @testable import Events
 
 final class ObjectSubscribersTests: XCTestCase {
-  enum TestEnum {
-    case ABC
-    case JKL
-    case XYZ
-  }
-
-  final class TestHashable: NSObject {
-  }
-
   func test_ObjectSubscribers_add_AnyHashable() {
     // If
     let os = ObjectSubscribers()
