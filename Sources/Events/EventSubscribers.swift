@@ -16,7 +16,7 @@ internal class EventSubscribers {
   private var subscribers: OrderedDictionary<EventSubscriberId, EventHandler> =
     [:]
 
-  func add(_ handler: @escaping EventHandler) -> EventSubscriberId {
+  internal func add(_ handler: @escaping EventHandler) -> EventSubscriberId {
     let currentSubscriberId: EventSubscriberId = nextSubscriberId
     nextSubscriberId += 1
 
@@ -25,11 +25,11 @@ internal class EventSubscribers {
     return currentSubscriberId
   }
 
-  func remove(_ subscriber: EventSubscriberId) -> Bool {
+  internal func remove(_ subscriber: EventSubscriberId) -> Bool {
     subscribers.removeValue(forKey: subscriber) != nil
   }
 
-  func forEach(_ body: (@escaping EventHandler) throws -> Void) throws {
-    try subscribers.values.forEach(body)
+  internal func forEach(_ body: (@escaping EventHandler) -> Void) {
+    subscribers.values.forEach(body)
   }
 }

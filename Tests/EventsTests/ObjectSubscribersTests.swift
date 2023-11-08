@@ -9,8 +9,8 @@ import XCTest
 
 @testable import Events
 
-final class ObjectSubscribersTests: XCTestCase {
-  func test_ObjectSubscribers_add_AnyHashable() {
+final internal class ObjectSubscribersTests: XCTestCase {
+  internal func test_ObjectSubscribers_add_AnyHashable() {
     // If
     let os = ObjectSubscribers()
     let someArray = [1, 2, 3]
@@ -26,7 +26,7 @@ final class ObjectSubscribersTests: XCTestCase {
     os.add(someHashable, withId: 1)
   }
 
-  func test_ObjectSubscribers_remove_NonExistentSubscriber() {
+  internal func test_ObjectSubscribers_remove_NonExistentSubscriber() {
     // If
     let os = ObjectSubscribers()
 
@@ -34,7 +34,7 @@ final class ObjectSubscribersTests: XCTestCase {
     XCTAssertNil(os.remove(0))
   }
 
-  func test_ObjectSubscribers_remove_ExistingSubscriber() {
+  internal func test_ObjectSubscribers_remove_ExistingSubscriber() {
     // If
     let os = ObjectSubscribers()
     os.add(0, withId: 0)

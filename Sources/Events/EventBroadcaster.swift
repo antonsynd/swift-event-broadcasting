@@ -50,23 +50,23 @@ public protocol EventBroadcasting {
     -> Bool
 
   // @brief Broadcasts @p event to all handlers subscribed to
-  // @p event.eventType. Handlers are executed in subscription order. If any
-  // handler throws, subsequent handlers will not execute.
-  // TODO: Accept a callback to invoke if a handler throws.
-  func broadcast(_ event: Event) throws
+  // @p event.eventType. Handlers are executed in subscription order.
+  func broadcast(_ event: Event)
 }
 
 // @brief Base class that can be subclassed directly.
 open class EventBroadcaster: EventBroadcasting {
   private var typeToSubscribers: [EventType: EventSubscribers] = [:]
   private var typeToObjectSubscribers: [EventType: ObjectSubscribers] = [:]
+  private let eventDispatcher: EventDispatching
 
-  // TODO: Extract this to a class that can be registered as the
-  // event handler scheduler by the client, but defaults to a DispatchQueue
-  // and has options to have queues per event type.
-  private static let eventQueue = DispatchQueue(label: "com.miod.events")
-
-  public init() {
+  public init(eventDispatcher: EventDispatching? = nil) {
+    if let actualEventDispatcher = eventDispatcher {
+      self.eventDispatcher = actualEventDispatcher
+    }
+    else {
+      self.eventDispatcher = getDefaultEventDispatcher()
+    }
   }
 
   public func subscribe(
@@ -143,14 +143,12 @@ open class EventBroadcaster: EventBroadcasting {
     return false
   }
 
-  public func broadcast(_ event: Event) throws {
+  public func broadcast(_ event: Event) {
     if let eventSubscribers: EventSubscribers = typeToSubscribers[
       event.eventType
     ] {
-      try eventSubscribers.forEach { (eventHandler: @escaping EventHandler) in
-        EventBroadcaster.eventQueue.sync {
-          eventHandler(event)
-        }
+      eventSubscribers.forEach { (eventHandler: @escaping EventHandler) in
+        eventDispatcher.dispatch(event, using: eventHandler)
       }
     }
   }

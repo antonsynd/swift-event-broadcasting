@@ -13,11 +13,11 @@ import Foundation
 internal class ObjectSubscribers {
   private var objectsToIds: [AnyHashable: Set<EventSubscriberId>] = [:]
 
-  func add(_ subscriber: AnyHashable, withId id: EventSubscriberId) {
+  internal func add(_ subscriber: AnyHashable, withId id: EventSubscriberId) {
     objectsToIds[subscriber, default: []].insert(id)
   }
 
-  func remove(_ subscriber: AnyHashable) -> Set<EventSubscriberId>? {
+  internal func remove(_ subscriber: AnyHashable) -> Set<EventSubscriberId>? {
     return objectsToIds.removeValue(forKey: subscriber)
   }
 }

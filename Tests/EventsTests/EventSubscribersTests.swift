@@ -9,8 +9,8 @@ import XCTest
 
 @testable import Events
 
-final class EventSubscribersTests: XCTestCase {
-  func test_EventSubscribers_add_HasIncreasingSubscriberId() {
+final internal class EventSubscribersTests: XCTestCase {
+  internal func test_EventSubscribers_add_HasIncreasingSubscriberId() {
     // If
     let es = EventSubscribers()
 
@@ -20,7 +20,7 @@ final class EventSubscribersTests: XCTestCase {
     }
   }
 
-  func test_EventSubscribers_remove_NonExistentSubscriberIdIsFalse() {
+  internal func test_EventSubscribers_remove_NonExistentSubscriberIdIsFalse() {
     // If
     let es = EventSubscribers()
     let id = es.add(dummyClosure)
@@ -29,7 +29,7 @@ final class EventSubscribersTests: XCTestCase {
     XCTAssertFalse(es.remove(id + 1))
   }
 
-  func test_EventSubscribers_remove_ExistingSubscriberIdIsTrue() {
+  internal func test_EventSubscribers_remove_ExistingSubscriberIdIsTrue() {
     // If
     let es = EventSubscribers()
     var id: EventSubscriberId = es.add(dummyClosure)
@@ -39,7 +39,7 @@ final class EventSubscribersTests: XCTestCase {
     XCTAssertTrue(es.remove(id - 1))
   }
 
-  func test_EventSubscribers_forEach() {
+  internal func test_EventSubscribers_forEach() {
     // If
     let e = Event(eventType: "foo")
     var result: Int = 0
@@ -51,7 +51,7 @@ final class EventSubscribersTests: XCTestCase {
     _ = es.remove(1)
 
     // When
-    try! es.forEach { $0(e) }
+    es.forEach { $0(e) }
 
     // Then
     XCTAssertEqual(result, 4)

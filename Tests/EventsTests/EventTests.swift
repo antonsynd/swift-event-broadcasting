@@ -9,8 +9,8 @@ import XCTest
 
 @testable import Events
 
-final class EventTests: XCTestCase {
-  func test_Event_eventType() {
+final internal class EventTests: XCTestCase {
+  internal func test_Event_eventType() {
     // If
     let e = Event(eventType: "test")
 
@@ -18,12 +18,12 @@ final class EventTests: XCTestCase {
     XCTAssertEqual(e.eventType, "test")
   }
 
-  func test_Event_ET() {
+  internal func test_Event_ET() {
     // If/when/then
     XCTAssertEqual(Event.ET("test"), "Event:test")
   }
 
-  func test_EventSubclass_eventType() {
+  internal func test_EventSubclass_eventType() {
     // If
     let e = TestEvent()
 
@@ -31,7 +31,7 @@ final class EventTests: XCTestCase {
     XCTAssertEqual(e.eventType, "TestEvent:foo")
   }
 
-  func test_EventSubclass_ET() {
+  internal func test_EventSubclass_ET() {
     // If/when/then
     XCTAssertEqual(TestEvent.ET("foo"), "TestEvent:foo")
   }

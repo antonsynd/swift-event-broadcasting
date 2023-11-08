@@ -9,8 +9,8 @@ import XCTest
 
 @testable import Events
 
-final class EventBroadcasterTests: XCTestCase {
-  func test_EventBroadcaster_unsubscribe_NonExistentEventType() {
+final internal class EventBroadcasterTests: XCTestCase {
+  internal func test_EventBroadcaster_unsubscribe_NonExistentEventType() {
     // If
     let eb = EventBroadcaster()
     var _ = eb.subscribe(to: TestEvent.FOO, handler: dummyClosure)
@@ -24,7 +24,7 @@ final class EventBroadcasterTests: XCTestCase {
     XCTAssertFalse(eb.unsubscribe(id: id, from: TestEvent.BAR))
   }
 
-  func test_EventBroadcaster_unsubscribe_NonExistentSubscriberId() {
+  internal func test_EventBroadcaster_unsubscribe_NonExistentSubscriberId() {
     // If
     let eb = EventBroadcaster()
     var _ = eb.subscribe(to: TestEvent.FOO, handler: dummyClosure)
@@ -38,7 +38,9 @@ final class EventBroadcasterTests: XCTestCase {
     XCTAssertFalse(eb.unsubscribe(id: id + 10, from: TestEvent.FOO))
   }
 
-  func test_EventBroadcaster_unsubscribe_ExistingSubscriberIdAndEventType() {
+  internal func
+    test_EventBroadcaster_unsubscribe_ExistingSubscriberIdAndEventType()
+  {
     // If
     let eb = EventBroadcaster()
     var _ = eb.subscribe(to: TestEvent.FOO, handler: dummyClosure)
@@ -52,7 +54,9 @@ final class EventBroadcasterTests: XCTestCase {
     XCTAssertTrue(eb.unsubscribe(id: id, from: TestEvent.FOO))
   }
 
-  func test_EventBroadcaster_unsubscribe_SubscriberAndNonExistentEventType() {
+  internal func
+    test_EventiBroadcaster_unsubscribe_SubscriberAndNonExistentEventType()
+  {
     // If
     let eb = EventBroadcaster()
     eb.subscribe(TestEnum.JKL, to: TestEvent.FOO, with: dummyClosure)
@@ -65,7 +69,7 @@ final class EventBroadcasterTests: XCTestCase {
     )
   }
 
-  func test_EventBroadcaster_unsubscribe_NonExistentSubscriber() {
+  internal func test_EventBroadcaster_unsubscribe_NonExistentSubscriber() {
     // If
     let eb = EventBroadcaster()
     eb.subscribe(TestEnum.JKL, to: TestEvent.FOO, with: dummyClosure)
@@ -78,7 +82,9 @@ final class EventBroadcasterTests: XCTestCase {
     )
   }
 
-  func test_EventBroadcaster_unsubscribe_ExistingSubscriberAndEventType() {
+  internal func
+    test_EventBroadcaster_unsubscribe_ExistingSubscriberAndEventType()
+  {
     // If
     let eb = EventBroadcaster()
     eb.subscribe(TestEnum.JKL, to: TestEvent.FOO, with: dummyClosure)
@@ -89,7 +95,7 @@ final class EventBroadcasterTests: XCTestCase {
     XCTAssertTrue(eb.unsubscribe(subscriber: TestEnum.ABC, from: TestEvent.FOO))
   }
 
-  func test_EventBroadcaster_broadcast() {
+  internal func test_EventBroadcaster_broadcast() {
     // If
     let eb = EventBroadcaster()
     var actualMessages: [String] = []
@@ -108,7 +114,7 @@ final class EventBroadcasterTests: XCTestCase {
     }
 
     // When
-    try! eb.broadcast(TestEvent())
+    eb.broadcast(TestEvent())
 
     // Then
     let expectedMessages = [

@@ -14,7 +14,7 @@ public typealias EventType = String
 // @brief An event. This can be subclassed to provide interfaces with data
 // relevant to the event being broadcast.
 open class Event {
-  let eventType: EventType
+  public let eventType: EventType
 
   public init(eventType: EventType) {
     self.eventType = eventType
