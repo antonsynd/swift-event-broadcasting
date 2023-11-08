@@ -9,7 +9,7 @@ import Foundation
 
 // @brief Dispatches events via a single dispatch queue.
 final public class DispatchQueueEventDispatcher: EventDispatching {
-  private let eventQueue = DispatchQueue(label: "com.course27.events")
+  private let eventQueue = DispatchQueue.global()
   private static var instance: DispatchQueueEventDispatcher?
 
   private init() {}
