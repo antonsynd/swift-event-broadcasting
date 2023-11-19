@@ -1,30 +1,24 @@
 # swift-event-broadcasting
 
 ![macOS (latest), Swift 5.8 workflow badge](https://github.com/antonsynd/swift-event-broadcasting/actions/workflows/macos_latest_swift_5_8.yml/badge.svg)
-
 ![Ubuntu (latest), Swift 5.8 workflow badge](https://github.com/antonsynd/swift-event-broadcasting/actions/workflows/ubuntu_latest_swift_5_8.yml/badge.svg)
-
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fantonsynd%2Fswift-event-broadcasting%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/antonsynd/swift-event-broadcasting)
-
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fantonsynd%2Fswift-event-broadcasting%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/antonsynd/swift-event-broadcasting)
 
-Event handling implementation for Swift.
+swift-event-broadcasting is a library for creating and observing events. It is
+similar in function to the `events` module in Node.js.
 
-## Basics
+Here, an `EventBroadcaster` is the analogue of Node.js `EventEmitter`, and an
+event subscriber is the analogue of an event handler.
 
-An event broadcaster is an object that extends `EventBroadcaster` or implements
-the `EventBroadcasting` protocol. It broadcasts events to subscribers via
-`broadcast()`.
+## Features
 
-Subscribers are event handlers (callback functions). They are subscribed to
-event broadcasters via the `subscribe()` method on the event broadcaster.
+* "Set it and forget it" event subscription
+* Support for broadcasting multiple event types
+* Hassle-free unsubscribe mechanism for `Hashable` subscribers 
+* Fully customizable event queueing and dispatching
 
-When an event is broadcasted via an event broadcaster's `broadcast()` method,
-all event handlers for that event's type are invoked synchronously in the order
-in which they were subscribed in a separate execution queue (which doesn't
-block the main thread).
-
-## How to
+## Quick start 
 
 ### Create an event broadcaster
 

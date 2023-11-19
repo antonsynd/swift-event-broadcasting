@@ -11,6 +11,10 @@ import Foundation
 // the EventBroadcaster to keep track of object subscribers for a particular
 // event type.
 internal class ObjectSubscribers {
+  // @todo: Use weak references here in case the original subscriber
+  // no longer exists, and also to not cause such subscribers to remain in
+  // memory longer than necessary, in case the client has forgotten to
+  // unsubscribe.
   private var objectsToIds: [AnyHashable: Set<EventSubscriberId>] = [:]
 
   internal func add(_ subscriber: AnyHashable, withId id: EventSubscriberId) {
