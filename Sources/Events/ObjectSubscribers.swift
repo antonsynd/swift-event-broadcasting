@@ -25,3 +25,29 @@ internal class ObjectSubscribers {
     return objectsToIds.removeValue(forKey: subscriber)
   }
 }
+
+class WeakDictionary<T: AnyObject, V> {
+  var dict: [HashableWeakReference<T>: V] = [:]
+}
+
+class ObjectSubscriberDict: WeakDictionary<AnyObject, Set<EventSubscriberId>> {
+
+}
+
+class HashableWeakReference<T: AnyObject>: Hashable {
+  weak var value: T?
+
+  init(_ value: T) {
+    self.value = value
+  }
+
+  func hash(into hasher: inout Hasher) {
+    if let actualValue = value {
+      hasher.combine(ObjectIdentifier(actualValue))
+    }
+  }
+
+  static func == (lhs: HashableWeakReference, rhs: HashableWeakReference) -> Bool {
+      return lhs.value === rhs.value
+  }
+}
