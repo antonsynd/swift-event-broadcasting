@@ -21,6 +21,7 @@ event subscriber is the analogue of an event handler.
 * **Async/await** integration with AsyncStream
 * **Combine** support with Publisher APIs
 * **Convenience methods**: `once`, `filter`, `map`, and more
+* **Debugging utilities**: logging, introspection, and statistics
 * Subscriber counting and introspection utilities
 
 ## Quick start
@@ -227,4 +228,55 @@ class CustomDispatcher: EventDispatching {
 }
 
 let service = GPSService(eventDispatcher: CustomDispatcher())
+```
+
+## Debugging and Introspection
+
+### Debug Logging
+
+Enable debug logging to see what's happening with your events:
+
+```swift
+let service = GPSService()
+
+// Enable debug logging with default options (logs everything)
+service.enableDebugLogging()
+
+// Or customize what gets logged
+service.enableDebugLogging(options: [.logBroadcasts, .logSubscriptions])
+
+// Custom logger
+service.enableDebugLogging { message in
+    os_log("%{public}@", log: .default, type: .debug, message)
+}
+```
+
+### Debug Information
+
+Get detailed information about broadcaster state:
+
+```swift
+// Print debug info to console
+service.printDebugInfo()
+
+// Get debug description as string
+let description = service.debugDescription()
+
+// Get statistics dictionary
+let stats = service.statistics()
+print("Total subscribers: \(stats["totalSubscribers"]!)")
+print("Event types: \(stats["eventTypes"]!)")
+```
+
+### Logging Event Dispatcher
+
+Wrap any dispatcher with logging:
+
+```swift
+let baseDispatcher = DispatchQueueEventDispatcher.EventDispatcher()
+let loggingDispatcher = LoggingEventDispatcher(wrapping: baseDispatcher) { message in
+    print("Event: \(message)")
+}
+
+let service = GPSService(eventDispatcher: loggingDispatcher)
 ```
