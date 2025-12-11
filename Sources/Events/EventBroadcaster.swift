@@ -56,8 +56,8 @@ public protocol EventBroadcasting {
 
 // @brief Base class that can be subclassed directly.
 open class EventBroadcaster: EventBroadcasting {
-  private var typeToSubscribers: [EventType: EventSubscribers] = [:]
-  private var typeToObjectSubscribers: [EventType: ObjectSubscribers] = [:]
+  internal var typeToSubscribers: [EventType: EventSubscribers] = [:]
+  internal var typeToObjectSubscribers: [EventType: ObjectSubscribers] = [:]
   private let eventDispatcher: EventDispatching
 
   public init(eventDispatcher: EventDispatching? = nil) {

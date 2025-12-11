@@ -32,4 +32,8 @@ internal class EventSubscribers {
   internal func forEach(_ body: (@escaping EventHandler) -> Void) {
     subscribers.values.forEach(body)
   }
+
+  internal func count() -> Int {
+    return subscribers.count
+  }
 }

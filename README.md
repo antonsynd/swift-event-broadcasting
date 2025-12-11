@@ -17,6 +17,11 @@ event subscriber is the analogue of an event handler.
 * Support for broadcasting multiple event types
 * Hassle-free unsubscribe mechanism for `Hashable` subscribers
 * Fully customizable event queueing and dispatching
+* **Type-safe events** with generic payload support
+* **Async/await** integration with AsyncStream
+* **Combine** support with Publisher APIs
+* **Convenience methods**: `once`, `filter`, `map`, and more
+* Subscriber counting and introspection utilities
 
 ## Quick start
 
@@ -51,7 +56,7 @@ subscriber id to call `unsubscribe()` later.
 let gpsService = GPSService()
 
 // Subscribe
-let subscriberId = gpsService.subscribe(to: "locationUpdate") {
+let subscriberId = gpsService.subscribe(to: "locationUpdate") { event in
   print("location updated")
 }
 
@@ -71,7 +76,7 @@ let gpsService = GPSService()
 let someHashable: AnyHashable = ...
 
 // Subscribe
-gpsService.subscribe(someHashable, to: "locationUpdate") {
+gpsService.subscribe(someHashable, to: "locationUpdate") { event in
   print("location updated")
 }
 
@@ -81,4 +86,145 @@ gpsService.broadcast(Event(eventType: "locationUpdate"))
 
 // Unsubscribe
 gpsService.unsubscribe(subscriber: someHashable, from: "locationUpdate")
+```
+
+## Advanced Features
+
+### Type-Safe Events
+
+Use `TypedEvent` for compile-time type safety with event payloads:
+
+```swift
+// Define a custom event type
+struct LocationData {
+  let latitude: Double
+  let longitude: Double
+}
+
+let eventType = "locationUpdate"
+
+// Subscribe with type safety
+gpsService.subscribe(to: eventType) { (event: TypedEvent<LocationData>) in
+  print("Location: \(event.payload.latitude), \(event.payload.longitude)")
+}
+
+// Broadcast with typed data
+let location = LocationData(latitude: 37.7749, longitude: -122.4194)
+gpsService.broadcast(TypedEvent(eventType: eventType, payload: location))
+```
+
+### Async/Await Support
+
+Stream events using modern Swift concurrency:
+
+```swift
+// Stream all events of a type
+Task {
+  for await event in gpsService.events(for: "locationUpdate") {
+    print("Received event: \(event)")
+  }
+}
+
+// Wait for a single event
+Task {
+  let event = await gpsService.nextEvent(for: "locationUpdate")
+  print("Got event: \(event)")
+}
+```
+
+### Combine Integration
+
+Use Combine publishers for reactive programming:
+
+```swift
+import Combine
+
+// Create a publisher for events
+let cancellable = gpsService.publisher(for: "locationUpdate")
+  .sink { event in
+    print("Received: \(event)")
+  }
+
+// Type-safe publisher
+let typedCancellable = gpsService.typedPublisher(for: "locationUpdate")
+  .map { (event: TypedEvent<LocationData>) in event.payload }
+  .sink { location in
+    print("Location: \(location.latitude), \(location.longitude)")
+  }
+```
+
+### Convenience Methods
+
+#### One-time subscription
+
+```swift
+// Subscribe to receive only the first event
+gpsService.once(to: "locationUpdate") { event in
+  print("First location update received")
+}
+```
+
+#### Filtered subscription
+
+```swift
+// Only receive events that match a condition
+gpsService.subscribe(
+  to: "locationUpdate",
+  filter: { event in
+    guard let typed = event as? TypedEvent<LocationData> else { return false }
+    return typed.payload.latitude > 0
+  }
+) { event in
+  print("Northern hemisphere location: \(event)")
+}
+```
+
+#### Mapped subscription
+
+```swift
+// Transform events before handling
+gpsService.subscribe(
+  to: "locationUpdate",
+  map: { event -> String? in
+    guard let typed = event as? TypedEvent<LocationData> else { return nil }
+    return "\(typed.payload.latitude),\(typed.payload.longitude)"
+  }
+) { coordinates in
+  print("Coordinates: \(coordinates)")
+}
+```
+
+### Introspection and Cleanup
+
+```swift
+// Check subscriber count
+let count = gpsService.subscriberCount(for: "locationUpdate")
+print("Subscribers: \(count)")
+
+// Get all event types with subscribers
+let types = gpsService.subscribedEventTypes()
+print("Active event types: \(types)")
+
+// Remove all subscribers for an event type
+gpsService.unsubscribeAll(from: "locationUpdate")
+
+// Remove all subscribers for all events
+gpsService.unsubscribeAll()
+```
+
+## Custom Event Dispatching
+
+Customize how events are dispatched by providing your own `EventDispatching` implementation:
+
+```swift
+class CustomDispatcher: EventDispatching {
+  func dispatch(_ event: Event, using eventHandler: @escaping EventHandler) {
+    // Custom dispatching logic
+    DispatchQueue.main.async {
+      eventHandler(event)
+    }
+  }
+}
+
+let service = GPSService(eventDispatcher: CustomDispatcher())
 ```
