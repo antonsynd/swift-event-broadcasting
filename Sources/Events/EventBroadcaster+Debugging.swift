@@ -33,11 +33,17 @@ extension EventBroadcaster {
     ]
   }
 
-  // @brief Creates a debugging wrapper around an event broadcaster that
-  // logs events and subscriptions. Useful for troubleshooting.
-  // @param options The types of events to log
+  // @brief Enables debug mode for the event broadcaster. Currently logs
+  // initialization only. For detailed event flow logging, use LoggingEventDispatcher
+  // when creating the broadcaster.
+  // @param options Reserved for future use
   // @param logger A custom logging function (defaults to print)
   // @return The broadcaster instance for chaining
+  //
+  // Note: For comprehensive logging of broadcasts and subscriptions, wrap your
+  // dispatcher with LoggingEventDispatcher:
+  //   let dispatcher = LoggingEventDispatcher(wrapping: baseDispatcher)
+  //   let broadcaster = EventBroadcaster(eventDispatcher: dispatcher)
   @discardableResult
   public func enableDebugLogging(
     options: DebugOptions = .all,
@@ -49,11 +55,9 @@ extension EventBroadcaster {
       return formatter.string(from: Date())
     }
 
-    if options.contains(.logSubscriptions) {
-      logger(
-        "[\(timestamp())] EventBroadcaster: Debug logging enabled with options: \(options)"
-      )
-    }
+    logger(
+      "[\(timestamp())] EventBroadcaster: Debug logging enabled (use LoggingEventDispatcher for event flow logging)"
+    )
 
     return self
   }

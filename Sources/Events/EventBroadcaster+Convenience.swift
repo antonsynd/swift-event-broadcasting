@@ -15,9 +15,12 @@ extension EventBroadcaster {
   // @param eventType The type of event to subscribe to
   // @param handler The handler to invoke once
   public func once(to eventType: EventType, handler: @escaping EventHandler) {
+    var didFire = false
     var subscriberId: EventSubscriberId?
 
-    subscriberId = subscribe(to: eventType) { event in
+    subscriberId = subscribe(to: eventType) { [self] event in
+      guard !didFire else { return }
+      didFire = true
       if let id = subscriberId {
         _ = self.unsubscribe(id: id, from: eventType)
       }

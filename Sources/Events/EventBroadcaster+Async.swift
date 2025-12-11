@@ -32,9 +32,12 @@ extension EventBroadcaster {
   // @return The next Event of the specified type
   public func nextEvent(for eventType: EventType) async -> Event {
     await withCheckedContinuation { continuation in
+      var hasResumed = false
       var subscriberId: EventSubscriberId?
 
-      subscriberId = self.subscribe(to: eventType) { event in
+      subscriberId = self.subscribe(to: eventType) { [self] event in
+        guard !hasResumed else { return }
+        hasResumed = true
         if let id = subscriberId {
           _ = self.unsubscribe(id: id, from: eventType)
         }

@@ -27,7 +27,8 @@
       }
 
       return subject
-        .handleEvents(receiveCancel: {
+        .handleEvents(receiveCancel: { [weak self] in
+          guard let self = self else { return }
           _ = self.unsubscribe(id: subscriberId, from: eventType)
         })
         .eraseToAnyPublisher()

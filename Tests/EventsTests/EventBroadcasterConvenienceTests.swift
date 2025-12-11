@@ -94,7 +94,7 @@ final internal class EventBroadcasterConvenienceTests: XCTestCase {
     XCTAssertEqual(eb.subscriberCount(for: eventType), 2)
 
     // Object subscribers also create an event subscriber internally,
-    // so this adds one more to the count
+    // so this adds two more to the count (one ObjectSubscriber and one EventSubscriber)
     eb.subscribe(TestEnum.ABC, to: eventType, with: dummyClosure)
     XCTAssertEqual(eb.subscriberCount(for: eventType), 4)
   }

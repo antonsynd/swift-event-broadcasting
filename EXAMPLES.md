@@ -132,13 +132,15 @@ import Events
 
 Task {
     let service = NotificationService()
+    var eventCount = 0
     
     // Stream events continuously
     for await event in service.events(for: NotificationService.notificationReceived) {
         print("Received event: \(event)")
+        eventCount += 1
         
-        // Break after some condition
-        if shouldStopListening {
+        // Break after receiving 3 events
+        if eventCount >= 3 {
             break
         }
     }
