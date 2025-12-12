@@ -9,6 +9,7 @@ import Foundation
 
 // @brief Extension to EventBroadcaster that provides async/await support
 // for event subscription using AsyncStream.
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension EventBroadcaster {
   // @brief Creates an AsyncStream that yields events of the specified type.
   // The stream will continue until it is cancelled or the broadcaster is
