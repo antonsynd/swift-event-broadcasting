@@ -24,4 +24,8 @@ internal class ObjectSubscribers {
   internal func remove(_ subscriber: AnyHashable) -> Set<EventSubscriberId>? {
     return objectsToIds.removeValue(forKey: subscriber)
   }
+
+  internal func count() -> Int {
+    return objectsToIds.count
+  }
 }
