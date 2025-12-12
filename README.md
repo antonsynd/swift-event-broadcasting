@@ -1,7 +1,7 @@
 # swift-event-broadcasting
 
-![macOS (latest), Swift 6.1 workflow badge](https://github.com/antonsynd/swift-event-broadcasting/actions/workflows/macos_latest_swift_6_1.yml/badge.svg)
-![Ubuntu (latest), Swift 6.1 workflow badge](https://github.com/antonsynd/swift-event-broadcasting/actions/workflows/ubuntu_latest_swift_6_1.yml/badge.svg)
+![macOS (latest), Swift 6.2 workflow badge](https://github.com/antonsynd/swift-event-broadcasting/actions/workflows/macos_latest_swift_6_2.yml/badge.svg)
+![Ubuntu (latest), Swift 6.2 workflow badge](https://github.com/antonsynd/swift-event-broadcasting/actions/workflows/ubuntu_latest_swift_6_2.yml/badge.svg)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fantonsynd%2Fswift-event-broadcasting%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/antonsynd/swift-event-broadcasting)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fantonsynd%2Fswift-event-broadcasting%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/antonsynd/swift-event-broadcasting)
 
