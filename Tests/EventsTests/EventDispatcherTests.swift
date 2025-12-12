@@ -5,11 +5,11 @@
 //  Created by Anton Nguyen on 11/7/23.
 //
 
-import XCTest
+import Testing
 
 @testable import Events
 
-final internal class NoOpEventDispatcher: EventDispatching {
+final class NoOpEventDispatcher: EventDispatching {
   public func dispatch(
     _ event: Event,
     using eventHandler: @escaping EventHandler
@@ -18,19 +18,16 @@ final internal class NoOpEventDispatcher: EventDispatching {
   }
 }
 
-final internal class EventDispatcherTests: XCTestCase {
-  private var handlerExecutionCount: Int = 0
-
-  private func incrementExecutionCountHandler(_ event: Event) {
-    handlerExecutionCount += 1
-  }
-
-  internal override func setUp() {
-    handlerExecutionCount = 0
-  }
-
-  internal func test_DefaultEventDispatcher_implicit_dispatch_AllEvents() {
+@Suite("EventDispatcher Tests")
+struct EventDispatcherTests {
+  @Test("Default dispatcher (implicit) dispatches matching events")
+  func defaultEventDispatcherImplicitDispatchAllEvents() {
     // If
+    var handlerExecutionCount = 0
+    let incrementExecutionCountHandler: EventHandler = { _ in
+      handlerExecutionCount += 1
+    }
+
     let eb = EventBroadcaster()
     _ = eb.subscribe(to: TestEvent.FOO, handler: incrementExecutionCountHandler)
     _ = eb.subscribe(to: TestEvent.BAR, handler: incrementExecutionCountHandler)
@@ -40,11 +37,17 @@ final internal class EventDispatcherTests: XCTestCase {
     eb.broadcast(TestEvent())
 
     // Then
-    XCTAssertEqual(handlerExecutionCount, 2)
+    #expect(handlerExecutionCount == 2)
   }
 
-  internal func test_DefaultEventDispatcher_explicit_dispatch_AllEvents() {
+  @Test("Default dispatcher (explicit) dispatches matching events")
+  func defaultEventDispatcherExplicitDispatchAllEvents() {
     // If
+    var handlerExecutionCount = 0
+    let incrementExecutionCountHandler: EventHandler = { _ in
+      handlerExecutionCount += 1
+    }
+
     let eb = EventBroadcaster(eventDispatcher: getDefaultEventDispatcher())
     _ = eb.subscribe(to: TestEvent.FOO, handler: incrementExecutionCountHandler)
     _ = eb.subscribe(to: TestEvent.BAR, handler: incrementExecutionCountHandler)
@@ -54,11 +57,17 @@ final internal class EventDispatcherTests: XCTestCase {
     eb.broadcast(TestEvent())
 
     // Then
-    XCTAssertEqual(handlerExecutionCount, 2)
+    #expect(handlerExecutionCount == 2)
   }
 
-  internal func test_NoOpEventDispatcher_dispatch_NoEvents() {
+  @Test("NoOp dispatcher dispatches no events")
+  func noOpEventDispatcherDispatchNoEvents() {
     // If
+    var handlerExecutionCount = 0
+    let incrementExecutionCountHandler: EventHandler = { _ in
+      handlerExecutionCount += 1
+    }
+
     let eb = EventBroadcaster(eventDispatcher: NoOpEventDispatcher())
     _ = eb.subscribe(to: TestEvent.FOO, handler: incrementExecutionCountHandler)
     _ = eb.subscribe(to: TestEvent.BAR, handler: incrementExecutionCountHandler)
@@ -68,7 +77,6 @@ final internal class EventDispatcherTests: XCTestCase {
     eb.broadcast(TestEvent())
 
     // Then
-    XCTAssertEqual(handlerExecutionCount, 0)
+    #expect(handlerExecutionCount == 0)
   }
-
 }

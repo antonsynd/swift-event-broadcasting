@@ -5,16 +5,18 @@
 //  Created by Anton Nguyen on 12/11/24.
 //
 
-import XCTest
+import Testing
 
 @testable import Events
 
-final internal class TypedEventTests: XCTestCase {
+@Suite("TypedEvent Tests")
+struct TypedEventTests {
   struct TestPayload {
     let value: String
   }
 
-  internal func test_TypedEvent_payload() {
+  @Test("TypedEvent stores and returns payload")
+  func payload() {
     // Given
     let payload = TestPayload(value: "test")
     let eventType = "testEvent"
@@ -23,11 +25,12 @@ final internal class TypedEventTests: XCTestCase {
     let event = TypedEvent(eventType: eventType, payload: payload)
 
     // Then
-    XCTAssertEqual(event.eventType, eventType)
-    XCTAssertEqual(event.payload.value, "test")
+    #expect(event.eventType == eventType)
+    #expect(event.payload.value == "test")
   }
 
-  internal func test_EventBroadcaster_typedSubscribe() {
+  @Test("EventBroadcaster typed subscribe receives typed events")
+  func typedSubscribe() {
     // Given
     let eb = EventBroadcaster()
     let eventType = "testEvent"
@@ -43,10 +46,11 @@ final internal class TypedEventTests: XCTestCase {
     eb.broadcast(TypedEvent(eventType: eventType, payload: payload))
 
     // Then
-    XCTAssertEqual(receivedPayload?.value, "hello")
+    #expect(receivedPayload?.value == "hello")
   }
 
-  internal func test_EventBroadcaster_typedSubscribe_withObject() {
+  @Test("EventBroadcaster typed subscribe with object receives typed events")
+  func typedSubscribeWithObject() {
     // Given
     let eb = EventBroadcaster()
     let eventType = "testEvent"
@@ -62,10 +66,11 @@ final internal class TypedEventTests: XCTestCase {
     eb.broadcast(TypedEvent(eventType: eventType, payload: payload))
 
     // Then
-    XCTAssertEqual(receivedPayload?.value, "world")
+    #expect(receivedPayload?.value == "world")
   }
 
-  internal func test_EventBroadcaster_typedSubscribe_ignoresNonTypedEvents() {
+  @Test("EventBroadcaster typed subscribe ignores non-typed events")
+  func typedSubscribeIgnoresNonTypedEvents() {
     // Given
     let eb = EventBroadcaster()
     let eventType = "testEvent"
@@ -81,6 +86,6 @@ final internal class TypedEventTests: XCTestCase {
     eb.broadcast(Event(eventType: eventType))
 
     // Then
-    XCTAssertEqual(callCount, 0)
+    #expect(callCount == 0)
   }
 }

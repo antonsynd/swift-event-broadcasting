@@ -5,12 +5,14 @@
 //  Created by Anton Nguyen on 5/17/23.
 //
 
-import XCTest
+import Testing
 
 @testable import Events
 
-final internal class EventBroadcasterTests: XCTestCase {
-  internal func test_EventBroadcaster_unsubscribe_NonExistentEventType() {
+@Suite("EventBroadcaster Tests")
+struct EventBroadcasterTests {
+  @Test("unsubscribe by ID returns false for non-existent event type")
+  func unsubscribeNonExistentEventType() {
     // If
     let eb = EventBroadcaster()
     var _ = eb.subscribe(to: TestEvent.FOO, handler: dummyClosure)
@@ -21,10 +23,11 @@ final internal class EventBroadcasterTests: XCTestCase {
     _ = eb.subscribe(to: TestEvent.BAR, handler: dummyClosure)
 
     // When/then
-    XCTAssertFalse(eb.unsubscribe(id: id, from: TestEvent.BAR))
+    #expect(eb.unsubscribe(id: id, from: TestEvent.BAR) == false)
   }
 
-  internal func test_EventBroadcaster_unsubscribe_NonExistentSubscriberId() {
+  @Test("unsubscribe by ID returns false for non-existent subscriber ID")
+  func unsubscribeNonExistentSubscriberId() {
     // If
     let eb = EventBroadcaster()
     var _ = eb.subscribe(to: TestEvent.FOO, handler: dummyClosure)
@@ -35,12 +38,13 @@ final internal class EventBroadcasterTests: XCTestCase {
     _ = eb.subscribe(to: TestEvent.BAR, handler: dummyClosure)
 
     // When/then
-    XCTAssertFalse(eb.unsubscribe(id: id + 10, from: TestEvent.FOO))
+    #expect(eb.unsubscribe(id: id + 10, from: TestEvent.FOO) == false)
   }
 
-  internal func
-    test_EventBroadcaster_unsubscribe_ExistingSubscriberIdAndEventType()
-  {
+  @Test(
+    "unsubscribe by ID returns true for existing subscriber ID and event type"
+  )
+  func unsubscribeExistingSubscriberIdAndEventType() {
     // If
     let eb = EventBroadcaster()
     var _ = eb.subscribe(to: TestEvent.FOO, handler: dummyClosure)
@@ -51,12 +55,11 @@ final internal class EventBroadcasterTests: XCTestCase {
     _ = eb.subscribe(to: TestEvent.BAR, handler: dummyClosure)
 
     // When/then
-    XCTAssertTrue(eb.unsubscribe(id: id, from: TestEvent.FOO))
+    #expect(eb.unsubscribe(id: id, from: TestEvent.FOO) == true)
   }
 
-  internal func
-    test_EventiBroadcaster_unsubscribe_SubscriberAndNonExistentEventType()
-  {
+  @Test("unsubscribe by subscriber returns false for non-existent event type")
+  func unsubscribeSubscriberAndNonExistentEventType() {
     // If
     let eb = EventBroadcaster()
     eb.subscribe(TestEnum.JKL, to: TestEvent.FOO, with: dummyClosure)
@@ -64,12 +67,13 @@ final internal class EventBroadcasterTests: XCTestCase {
     eb.subscribe(TestEnum.XYZ, to: TestEvent.BAR, with: dummyClosure)
 
     // When/then
-    XCTAssertFalse(
-      eb.unsubscribe(subscriber: TestEnum.ABC, from: TestEvent.BAR)
+    #expect(
+      eb.unsubscribe(subscriber: TestEnum.ABC, from: TestEvent.BAR) == false
     )
   }
 
-  internal func test_EventBroadcaster_unsubscribe_NonExistentSubscriber() {
+  @Test("unsubscribe by subscriber returns false for non-existent subscriber")
+  func unsubscribeNonExistentSubscriber() {
     // If
     let eb = EventBroadcaster()
     eb.subscribe(TestEnum.JKL, to: TestEvent.FOO, with: dummyClosure)
@@ -77,14 +81,15 @@ final internal class EventBroadcasterTests: XCTestCase {
     eb.subscribe(TestEnum.XYZ, to: TestEvent.BAR, with: dummyClosure)
 
     // When/then
-    XCTAssertFalse(
-      eb.unsubscribe(subscriber: TestEnum.XYZ, from: TestEvent.FOO)
+    #expect(
+      eb.unsubscribe(subscriber: TestEnum.XYZ, from: TestEvent.FOO) == false
     )
   }
 
-  internal func
-    test_EventBroadcaster_unsubscribe_ExistingSubscriberAndEventType()
-  {
+  @Test(
+    "unsubscribe by subscriber returns true for existing subscriber and event type"
+  )
+  func unsubscribeExistingSubscriberAndEventType() {
     // If
     let eb = EventBroadcaster()
     eb.subscribe(TestEnum.JKL, to: TestEvent.FOO, with: dummyClosure)
@@ -92,10 +97,13 @@ final internal class EventBroadcasterTests: XCTestCase {
     eb.subscribe(TestEnum.XYZ, to: TestEvent.BAR, with: dummyClosure)
 
     // When/then
-    XCTAssertTrue(eb.unsubscribe(subscriber: TestEnum.ABC, from: TestEvent.FOO))
+    #expect(
+      eb.unsubscribe(subscriber: TestEnum.ABC, from: TestEvent.FOO) == true
+    )
   }
 
-  internal func test_EventBroadcaster_broadcast() {
+  @Test("broadcast delivers events to handlers in order")
+  func broadcast() {
     // If
     let eb = EventBroadcaster()
     var actualMessages: [String] = []
@@ -123,6 +131,6 @@ final internal class EventBroadcasterTests: XCTestCase {
       "abcHandler_FOO_2",
     ]
 
-    XCTAssertEqual(actualMessages, expectedMessages)
+    #expect(actualMessages == expectedMessages)
   }
 }

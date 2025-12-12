@@ -5,34 +5,39 @@
 //  Created by Anton Nguyen on 11/2/23.
 //
 
-import XCTest
+import Testing
 
 @testable import Events
 
-final internal class EventTests: XCTestCase {
-  internal func test_Event_eventType() {
+@Suite("Event Tests")
+struct EventTests {
+  @Test("Event eventType returns correct value")
+  func eventType() {
     // If
     let e = Event(eventType: "test")
 
     // When/then
-    XCTAssertEqual(e.eventType, "test")
+    #expect(e.eventType == "test")
   }
 
-  internal func test_Event_ET() {
+  @Test("Event.ET creates namespaced event type")
+  func eventET() {
     // If/when/then
-    XCTAssertEqual(Event.ET("test"), "Event:test")
+    #expect(Event.ET("test") == "Event:test")
   }
 
-  internal func test_EventSubclass_eventType() {
+  @Test("Event subclass eventType returns correct value")
+  func eventSubclassEventType() {
     // If
     let e = TestEvent()
 
     // When/then
-    XCTAssertEqual(e.eventType, "TestEvent:foo")
+    #expect(e.eventType == "TestEvent:foo")
   }
 
-  internal func test_EventSubclass_ET() {
+  @Test("Event subclass ET creates namespaced event type")
+  func eventSubclassET() {
     // If/when/then
-    XCTAssertEqual(TestEvent.ET("foo"), "TestEvent:foo")
+    #expect(TestEvent.ET("foo") == "TestEvent:foo")
   }
 }

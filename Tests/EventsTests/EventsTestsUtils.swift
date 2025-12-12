@@ -8,7 +8,7 @@
 import Events
 import Foundation
 
-internal final class TestEvent: Event {
+final class TestEvent: Event {
   static let FOO = TestEvent.ET("foo")
   static let BAR = TestEvent.ET("bar")
 
@@ -17,13 +17,13 @@ internal final class TestEvent: Event {
   }
 }
 
-internal enum TestEnum {
+enum TestEnum {
   case ABC
   case JKL
   case XYZ
 }
 
-internal let dummyClosure = { (e: Event) in return }
+let dummyClosure = { (e: Event) in return }
 
-internal final class TestHashable: NSObject {
+final class TestHashable: NSObject {
 }

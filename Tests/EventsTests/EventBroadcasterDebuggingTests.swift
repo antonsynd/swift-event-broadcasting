@@ -5,12 +5,14 @@
 //  Created by Anton Nguyen on 12/11/24.
 //
 
-import XCTest
+import Testing
 
 @testable import Events
 
-final internal class EventBroadcasterDebuggingTests: XCTestCase {
-  internal func test_EventBroadcaster_debugDescription_empty() {
+@Suite("EventBroadcaster Debugging Tests")
+struct EventBroadcasterDebuggingTests {
+  @Test("debugDescription shows no subscriptions when empty")
+  func debugDescriptionEmpty() {
     // Given
     let eb = EventBroadcaster()
 
@@ -18,10 +20,11 @@ final internal class EventBroadcasterDebuggingTests: XCTestCase {
     let description = eb.debugDescription()
 
     // Then
-    XCTAssertTrue(description.contains("No active subscriptions"))
+    #expect(description.contains("No active subscriptions"))
   }
 
-  internal func test_EventBroadcaster_debugDescription_withSubscriptions() {
+  @Test("debugDescription shows subscriptions when present")
+  func debugDescriptionWithSubscriptions() {
     // Given
     let eb = EventBroadcaster()
     let _ = eb.subscribe(to: "event1", handler: dummyClosure)
@@ -32,12 +35,13 @@ final internal class EventBroadcasterDebuggingTests: XCTestCase {
     let description = eb.debugDescription()
 
     // Then
-    XCTAssertTrue(description.contains("event1"))
-    XCTAssertTrue(description.contains("event2"))
-    XCTAssertTrue(description.contains("Active event types: 2"))
+    #expect(description.contains("event1"))
+    #expect(description.contains("event2"))
+    #expect(description.contains("Active event types: 2"))
   }
 
-  internal func test_EventBroadcaster_statistics() {
+  @Test("statistics returns correct counts")
+  func statistics() {
     // Given
     let eb = EventBroadcaster()
     let _ = eb.subscribe(to: "event1", handler: dummyClosure)
@@ -48,15 +52,16 @@ final internal class EventBroadcasterDebuggingTests: XCTestCase {
     let stats = eb.statistics()
 
     // Then
-    XCTAssertEqual(stats["totalEventTypes"] as? Int, 2)
-    XCTAssertEqual(stats["totalSubscribers"] as? Int, 3)
+    #expect(stats["totalEventTypes"] as? Int == 2)
+    #expect(stats["totalSubscribers"] as? Int == 3)
 
     let eventTypes = stats["eventTypes"] as? [String] ?? []
-    XCTAssertTrue(eventTypes.contains("event1"))
-    XCTAssertTrue(eventTypes.contains("event2"))
+    #expect(eventTypes.contains("event1"))
+    #expect(eventTypes.contains("event2"))
   }
 
-  internal func test_LoggingEventDispatcher_logsDispatches() {
+  @Test("LoggingEventDispatcher logs dispatches")
+  func loggingEventDispatcherLogsDispatches() {
     // Given
     var loggedMessages: [String] = []
     let logger: (String) -> Void = { message in
@@ -81,12 +86,13 @@ final internal class EventBroadcasterDebuggingTests: XCTestCase {
     eb.broadcast(Event(eventType: eventType))
 
     // Then
-    XCTAssertTrue(handlerCalled)
-    XCTAssertEqual(loggedMessages.count, 1)
-    XCTAssertTrue(loggedMessages[0].contains(eventType))
+    #expect(handlerCalled)
+    #expect(loggedMessages.count == 1)
+    #expect(loggedMessages[0].contains(eventType))
   }
 
-  internal func test_EventBroadcaster_enableDebugLogging() {
+  @Test("enableDebugLogging returns self for chaining")
+  func enableDebugLogging() {
     // Given
     let eb = EventBroadcaster()
     var loggedMessages: [String] = []
@@ -97,7 +103,7 @@ final internal class EventBroadcasterDebuggingTests: XCTestCase {
     }
 
     // Then
-    XCTAssertTrue(result === eb)  // Should return self for chaining
-    XCTAssertTrue(loggedMessages.count > 0)  // Should log initialization
+    #expect(result === eb)  // Should return self for chaining
+    #expect(loggedMessages.count > 0)  // Should log initialization
   }
 }

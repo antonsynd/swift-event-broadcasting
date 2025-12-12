@@ -5,41 +5,46 @@
 //  Created by Anton Nguyen on 11/2/23.
 //
 
-import XCTest
+import Testing
 
 @testable import Events
 
-final internal class EventSubscribersTests: XCTestCase {
-  internal func test_EventSubscribers_add_HasIncreasingSubscriberId() {
+@Suite("EventSubscribers Tests")
+struct EventSubscribersTests {
+  @Test("add returns increasing subscriber IDs")
+  func addHasIncreasingSubscriberId() {
     // If
     let es = EventSubscribers()
 
     // When/then
     for i: UInt in 0..<10 {
-      XCTAssertEqual(es.add(dummyClosure), i)
+      #expect(es.add(dummyClosure) == i)
     }
   }
 
-  internal func test_EventSubscribers_remove_NonExistentSubscriberIdIsFalse() {
+  @Test("remove returns false for non-existent subscriber ID")
+  func removeNonExistentSubscriberIdIsFalse() {
     // If
     let es = EventSubscribers()
     let id = es.add(dummyClosure)
 
     // When/then
-    XCTAssertFalse(es.remove(id + 1))
+    #expect(es.remove(id + 1) == false)
   }
 
-  internal func test_EventSubscribers_remove_ExistingSubscriberIdIsTrue() {
+  @Test("remove returns true for existing subscriber ID")
+  func removeExistingSubscriberIdIsTrue() {
     // If
     let es = EventSubscribers()
     var id: EventSubscriberId = es.add(dummyClosure)
     id = es.add(dummyClosure)
 
     // When/then
-    XCTAssertTrue(es.remove(id - 1))
+    #expect(es.remove(id - 1) == true)
   }
 
-  internal func test_EventSubscribers_forEach() {
+  @Test("forEach iterates over all handlers")
+  func forEach() {
     // If
     let e = Event(eventType: "foo")
     var result: Int = 0
@@ -54,6 +59,6 @@ final internal class EventSubscribersTests: XCTestCase {
     es.forEach { $0(e) }
 
     // Then
-    XCTAssertEqual(result, 4)
+    #expect(result == 4)
   }
 }

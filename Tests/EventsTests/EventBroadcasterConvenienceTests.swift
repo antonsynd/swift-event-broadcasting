@@ -5,12 +5,14 @@
 //  Created by Anton Nguyen on 12/11/24.
 //
 
-import XCTest
+import Testing
 
 @testable import Events
 
-final internal class EventBroadcasterConvenienceTests: XCTestCase {
-  internal func test_EventBroadcaster_once() {
+@Suite("EventBroadcaster Convenience Tests")
+struct EventBroadcasterConvenienceTests {
+  @Test("once handler fires only once")
+  func once() {
     // Given
     let eb = EventBroadcaster()
     let eventType = "testEvent"
@@ -26,10 +28,11 @@ final internal class EventBroadcasterConvenienceTests: XCTestCase {
     eb.broadcast(Event(eventType: eventType))
 
     // Then
-    XCTAssertEqual(callCount, 1)
+    #expect(callCount == 1)
   }
 
-  internal func test_EventBroadcaster_subscribeWithFilter() {
+  @Test("subscribe with filter only receives matching events")
+  func subscribeWithFilter() {
     // Given
     let eb = EventBroadcaster()
     let eventType = "testEvent"
@@ -51,10 +54,11 @@ final internal class EventBroadcasterConvenienceTests: XCTestCase {
     eb.broadcast(TypedEvent(eventType: eventType, payload: 2))
 
     // Then
-    XCTAssertEqual(receivedEvents.count, 2)
+    #expect(receivedEvents.count == 2)
   }
 
-  internal func test_EventBroadcaster_subscribeWithMap() {
+  @Test("subscribe with map transforms events")
+  func subscribeWithMap() {
     // Given
     let eb = EventBroadcaster()
     let eventType = "testEvent"
@@ -76,47 +80,50 @@ final internal class EventBroadcasterConvenienceTests: XCTestCase {
     eb.broadcast(TypedEvent(eventType: eventType, payload: 100))
 
     // Then
-    XCTAssertEqual(receivedValues, ["Value: 42", "Value: 100"])
+    #expect(receivedValues == ["Value: 42", "Value: 100"])
   }
 
-  internal func test_EventBroadcaster_subscriberCount() {
+  @Test("subscriberCount returns correct count")
+  func subscriberCount() {
     // Given
     let eb = EventBroadcaster()
     let eventType = "testEvent"
 
     // When/Then
-    XCTAssertEqual(eb.subscriberCount(for: eventType), 0)
+    #expect(eb.subscriberCount(for: eventType) == 0)
 
     let _ = eb.subscribe(to: eventType, handler: dummyClosure)
-    XCTAssertEqual(eb.subscriberCount(for: eventType), 1)
+    #expect(eb.subscriberCount(for: eventType) == 1)
 
     let _ = eb.subscribe(to: eventType, handler: dummyClosure)
-    XCTAssertEqual(eb.subscriberCount(for: eventType), 2)
+    #expect(eb.subscriberCount(for: eventType) == 2)
 
     // Object subscribers also create an event subscriber internally,
     // so this adds two more to the count (one ObjectSubscriber and one EventSubscriber)
     eb.subscribe(TestEnum.ABC, to: eventType, with: dummyClosure)
-    XCTAssertEqual(eb.subscriberCount(for: eventType), 4)
+    #expect(eb.subscriberCount(for: eventType) == 4)
   }
 
-  internal func test_EventBroadcaster_subscribedEventTypes() {
+  @Test("subscribedEventTypes returns all subscribed event types")
+  func subscribedEventTypes() {
     // Given
     let eb = EventBroadcaster()
 
     // When/Then
-    XCTAssertEqual(eb.subscribedEventTypes(), [])
+    #expect(eb.subscribedEventTypes() == [])
 
     let _ = eb.subscribe(to: "event1", handler: dummyClosure)
-    XCTAssertEqual(eb.subscribedEventTypes(), ["event1"])
+    #expect(eb.subscribedEventTypes() == ["event1"])
 
     let _ = eb.subscribe(to: "event2", handler: dummyClosure)
-    XCTAssertEqual(eb.subscribedEventTypes(), ["event1", "event2"])
+    #expect(eb.subscribedEventTypes() == ["event1", "event2"])
 
     eb.subscribe(TestEnum.ABC, to: "event3", with: dummyClosure)
-    XCTAssertEqual(eb.subscribedEventTypes(), ["event1", "event2", "event3"])
+    #expect(eb.subscribedEventTypes() == ["event1", "event2", "event3"])
   }
 
-  internal func test_EventBroadcaster_unsubscribeAll_fromEventType() {
+  @Test("unsubscribeAll from event type removes all handlers for that type")
+  func unsubscribeAllFromEventType() {
     // Given
     let eb = EventBroadcaster()
     let eventType = "testEvent"
@@ -131,11 +138,12 @@ final internal class EventBroadcasterConvenienceTests: XCTestCase {
     eb.broadcast(Event(eventType: eventType))
 
     // Then
-    XCTAssertEqual(callCount, 0)
-    XCTAssertEqual(eb.subscriberCount(for: eventType), 0)
+    #expect(callCount == 0)
+    #expect(eb.subscriberCount(for: eventType) == 0)
   }
 
-  internal func test_EventBroadcaster_unsubscribeAll() {
+  @Test("unsubscribeAll removes all handlers")
+  func unsubscribeAll() {
     // Given
     let eb = EventBroadcaster()
     var callCount = 0
@@ -152,7 +160,7 @@ final internal class EventBroadcasterConvenienceTests: XCTestCase {
     eb.broadcast(Event(eventType: "event3"))
 
     // Then
-    XCTAssertEqual(callCount, 0)
-    XCTAssertEqual(eb.subscribedEventTypes(), [])
+    #expect(callCount == 0)
+    #expect(eb.subscribedEventTypes() == [])
   }
 }

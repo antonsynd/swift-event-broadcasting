@@ -5,12 +5,14 @@
 //  Created by Anton Nguyen on 11/2/23.
 //
 
-import XCTest
+import Testing
 
 @testable import Events
 
-final internal class ObjectSubscribersTests: XCTestCase {
-  internal func test_ObjectSubscribers_add_AnyHashable() {
+@Suite("ObjectSubscribers Tests")
+struct ObjectSubscribersTests {
+  @Test("add accepts any hashable subscriber")
+  func addAnyHashable() {
     // If
     let os = ObjectSubscribers()
     let someArray = [1, 2, 3]
@@ -26,15 +28,17 @@ final internal class ObjectSubscribersTests: XCTestCase {
     os.add(someHashable, withId: 1)
   }
 
-  internal func test_ObjectSubscribers_remove_NonExistentSubscriber() {
+  @Test("remove returns nil for non-existent subscriber")
+  func removeNonExistentSubscriber() {
     // If
     let os = ObjectSubscribers()
 
     // When/then
-    XCTAssertNil(os.remove(0))
+    #expect(os.remove(0) == nil)
   }
 
-  internal func test_ObjectSubscribers_remove_ExistingSubscriber() {
+  @Test("remove returns subscriber IDs for existing subscriber")
+  func removeExistingSubscriber() {
     // If
     let os = ObjectSubscribers()
     os.add(0, withId: 0)
@@ -46,7 +50,7 @@ final internal class ObjectSubscribersTests: XCTestCase {
     let expectedIds: Set<EventSubscriberId> = [0, 3, 6]
 
     // Then
-    XCTAssertNotNil(actualIds)
-    XCTAssertEqual(actualIds!, expectedIds)
+    #expect(actualIds != nil)
+    #expect(actualIds == expectedIds)
   }
 }

@@ -48,10 +48,11 @@ swift-format lint -r . # Check formatting
 ## Code Conventions
 
 - **Doc comments**: Use `///` style for documentation comments (Swift standard)
-- **Test naming**: `test_<Class>_<method>_<Scenario>` pattern
-- **Test structure**: Use `// If`, `// When/then` comments for Given/When/Then sections
+- **Testing framework**: Swift Testing (`import Testing`) with `@Suite` and `@Test` attributes
+- **Test naming**: Use descriptive `@Test("description")` labels
+- **Test structure**: Use `// Given`, `// When`, `// Then` or `// If`, `// When/then` comments
+- **Test assertions**: Use `#expect()` for soft assertions, `#require()` for hard assertions
 - **Test utilities**: Shared fixtures in `Tests/EventsTests/EventsTestsUtils.swift`
-- **Visibility**: Mark test classes/methods as `internal`, not `public`
 - **Conditional compilation**: Use `#if canImport(Combine)` for platform-specific features
 
 ## Key Abstractions to Understand
