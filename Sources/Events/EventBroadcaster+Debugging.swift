@@ -7,10 +7,9 @@
 
 import Foundation
 
-// @brief Extension providing debugging and logging utilities for event
-// broadcasting.
+/// Extension providing debugging and logging utilities for event broadcasting.
 extension EventBroadcaster {
-  // @brief Options for controlling debug output
+  /// Options for controlling debug output.
   public struct DebugOptions: OptionSet {
     public let rawValue: Int
 
@@ -33,17 +32,22 @@ extension EventBroadcaster {
     ]
   }
 
-  // @brief Enables debug mode for the event broadcaster. Currently logs
-  // initialization only. For detailed event flow logging, use LoggingEventDispatcher
-  // when creating the broadcaster.
-  // @param options Reserved for future use
-  // @param logger A custom logging function (defaults to print)
-  // @return The broadcaster instance for chaining
-  //
-  // Note: For comprehensive logging of broadcasts and subscriptions, wrap your
-  // dispatcher with LoggingEventDispatcher:
-  //   let dispatcher = LoggingEventDispatcher(wrapping: baseDispatcher)
-  //   let broadcaster = EventBroadcaster(eventDispatcher: dispatcher)
+  /// Enables debug mode for the event broadcaster.
+  ///
+  /// Currently logs initialization only. For detailed event flow logging, use
+  /// `LoggingEventDispatcher` when creating the broadcaster.
+  ///
+  /// - Parameters:
+  ///   - options: Reserved for future use.
+  ///   - logger: A custom logging function (defaults to `print`).
+  /// - Returns: The broadcaster instance for chaining.
+  ///
+  /// - Note: For comprehensive logging of broadcasts and subscriptions, wrap your
+  ///   dispatcher with `LoggingEventDispatcher`:
+  ///   ```swift
+  ///   let dispatcher = LoggingEventDispatcher(wrapping: baseDispatcher)
+  ///   let broadcaster = EventBroadcaster(eventDispatcher: dispatcher)
+  ///   ```
   @discardableResult
   public func enableDebugLogging(
     options: DebugOptions = .all,
@@ -62,10 +66,10 @@ extension EventBroadcaster {
     return self
   }
 
-  // @brief Gets a detailed description of the current state of the
-  // broadcaster, including all subscribed event types and their
-  // subscriber counts.
-  // @return A formatted string describing the broadcaster state
+  /// Gets a detailed description of the current state of the broadcaster,
+  /// including all subscribed event types and their subscriber counts.
+  ///
+  /// - Returns: A formatted string describing the broadcaster state.
   public func debugDescription() -> String {
     var description = "EventBroadcaster State:\n"
 
@@ -86,13 +90,14 @@ extension EventBroadcaster {
     return description
   }
 
-  // @brief Prints a detailed debug description to stdout
+  /// Prints a detailed debug description to stdout.
   public func printDebugInfo() {
     print(debugDescription())
   }
 
-  // @brief Returns statistics about the broadcaster's current state
-  // @return A dictionary with various statistics
+  /// Returns statistics about the broadcaster's current state.
+  ///
+  /// - Returns: A dictionary with various statistics.
   public func statistics() -> [String: Any] {
     let types = subscribedEventTypes()
     var totalSubscribers = 0
@@ -109,8 +114,10 @@ extension EventBroadcaster {
   }
 }
 
-// @brief A debugging event dispatcher that logs all dispatch operations.
-// Useful for troubleshooting event flow.
+/// A debugging event dispatcher that logs all dispatch operations.
+///
+/// Useful for troubleshooting event flow. Wraps another dispatcher and logs
+/// each event before delegating to the wrapped dispatcher.
 public class LoggingEventDispatcher: EventDispatching {
   private let wrappedDispatcher: EventDispatching
   private let logger: (String) -> Void

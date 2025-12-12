@@ -8,9 +8,9 @@
 import Collections
 import Foundation
 
-// @brief Maintains subscriber id to event handler relations, and controls
-// the distribution of new subscriber ids. Used by the EventBroadcaster to
-// keep track of subscribers for a particular event type.
+/// Maintains subscriber ID to event handler relations and controls
+/// the distribution of new subscriber IDs. Used by the `EventBroadcaster` to
+/// keep track of subscribers for a particular event type.
 internal class EventSubscribers {
   private var nextSubscriberId: EventSubscriberId = 0
   private var subscribers: OrderedDictionary<EventSubscriberId, EventHandler> =

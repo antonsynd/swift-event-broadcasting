@@ -7,12 +7,11 @@
 
 import Foundation
 
-// @brief An event type, indicating a particular situation or use case of an
-// event.
+/// An event type, indicating a particular situation or use case of an event.
 public typealias EventType = String
 
-// @brief An event. This can be subclassed to provide interfaces with data
-// relevant to the event being broadcast.
+/// An event that can be subclassed to provide interfaces with data
+/// relevant to the event being broadcast.
 open class Event {
   public let eventType: EventType
 
@@ -20,8 +19,11 @@ open class Event {
     self.eventType = eventType
   }
 
-  // @brief Convenience method to prepend the class name to an event type
-  // string to prevent name clashes. Optional, but recommended.
+  /// Convenience method to prepend the class name to an event type string
+  /// to prevent name clashes. Optional, but recommended.
+  ///
+  /// - Parameter eventType: The event type string to namespace.
+  /// - Returns: A namespaced event type in the format `"ClassName:eventType"`.
   public static func ET(_ eventType: String) -> EventType {
     return "\(String(describing: self)):\(eventType)"
   }

@@ -47,7 +47,7 @@ swift-format lint -r . # Check formatting
 
 ## Code Conventions
 
-- **Doc comments**: Use `// @brief` style (project convention, not standard `///`)
+- **Doc comments**: Use `///` style for documentation comments (Swift standard)
 - **Test naming**: `test_<Class>_<method>_<Scenario>` pattern
 - **Test structure**: Use `// If`, `// When/then` comments for Given/When/Then sections
 - **Test utilities**: Shared fixtures in `Tests/EventsTests/EventsTestsUtils.swift`

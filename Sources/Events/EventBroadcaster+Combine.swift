@@ -9,14 +9,16 @@
   import Combine
   import Foundation
 
-  // @brief Extension to EventBroadcaster that provides Combine Publisher support.
+  /// Extension to `EventBroadcaster` that provides Combine `Publisher` support.
   @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
   extension EventBroadcaster {
-    // @brief Creates a Combine Publisher that emits events of the specified type.
-    // The publisher will continue emitting events until all subscriptions are
-    // cancelled or the broadcaster is deallocated.
-    // @param eventType The type of events to publish
-    // @return A Publisher that emits Events matching the specified type
+    /// Creates a Combine `Publisher` that emits events of the specified type.
+    ///
+    /// The publisher will continue emitting events until all subscriptions are
+    /// cancelled or the broadcaster is deallocated.
+    ///
+    /// - Parameter eventType: The type of events to publish.
+    /// - Returns: A publisher that emits events matching the specified type.
     public func publisher(for eventType: EventType) -> AnyPublisher<
       Event, Never
     > {
@@ -35,10 +37,12 @@
         .eraseToAnyPublisher()
     }
 
-    // @brief Creates a type-safe Combine Publisher for typed events.
-    // Only events that can be cast to TypedEvent<T> will be emitted.
-    // @param eventType The type of events to publish
-    // @return A Publisher that emits TypedEvent<T> instances
+    /// Creates a type-safe Combine `Publisher` for typed events.
+    ///
+    /// Only events that can be cast to `TypedEvent<T>` will be emitted.
+    ///
+    /// - Parameter eventType: The type of events to publish.
+    /// - Returns: A publisher that emits `TypedEvent<T>` instances.
     public func typedPublisher<T>(for eventType: EventType) -> AnyPublisher<
       TypedEvent<T>, Never
     > {

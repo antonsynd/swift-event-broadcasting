@@ -7,9 +7,9 @@
 
 import Foundation
 
-// @brief Maintains object subscribers to subscriber id relations. Used by
-// the EventBroadcaster to keep track of object subscribers for a particular
-// event type.
+/// Maintains object subscribers to subscriber ID relations. Used by
+/// the `EventBroadcaster` to keep track of object subscribers for a particular
+/// event type.
 internal class ObjectSubscribers {
   // @todo: Use weak references here in case the original subscriber
   // no longer exists, and also to not cause such subscribers to remain in

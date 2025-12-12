@@ -108,21 +108,21 @@ service.publisher(for: "update")
 ```swift
 class MyService {
     private var subscriberIds: [EventSubscriberId] = []
-    
+
     func start() {
         let id = broadcaster.subscribe(to: "event") { event in
             // Handle event
         }
         subscriberIds.append(id)
     }
-    
+
     func stop() {
         subscriberIds.forEach { id in
             broadcaster.unsubscribe(id: id, from: "event")
         }
         subscriberIds.removeAll()
     }
-    
+
     deinit {
         stop()
     }
@@ -135,7 +135,7 @@ class MyService {
 // ❌ Strong reference cycle
 class ViewController {
     let service = Service()
-    
+
     func setup() {
         service.subscribe(to: "event") { event in
             self.handleEvent(event)  // Strong reference to self
@@ -146,7 +146,7 @@ class ViewController {
 // ✅ Use weak references
 class ViewController {
     let service = Service()
-    
+
     func setup() {
         service.subscribe(to: "event") { [weak self] event in
             self?.handleEvent(event)
@@ -215,6 +215,110 @@ let testService = Service(eventDispatcher: SyncDispatcher())
 
 ## Thread Safety
 
+### Understanding EventBroadcaster's Threading Model
+
+`EventBroadcaster` is **not thread-safe by default**. The internal subscriber dictionaries are not protected by locks, so concurrent modifications from multiple threads can cause crashes or undefined behavior.
+
+```swift
+// ❌ UNSAFE: Concurrent access from multiple queues
+class UnsafeService {
+    let broadcaster = EventBroadcaster()
+
+    func backgroundTask() {
+        DispatchQueue.global().async {
+            // Modifying subscribers from background queue
+            _ = self.broadcaster.subscribe(to: "event") { _ in }
+        }
+    }
+
+    func mainTask() {
+        DispatchQueue.main.async {
+            // Simultaneously modifying from main queue - RACE CONDITION!
+            self.broadcaster.unsubscribeAll()
+        }
+    }
+}
+```
+
+### Safe Patterns for Multi-Threaded Use
+
+**Option 1: Serialize all access through a single queue**
+
+```swift
+// ✅ Safe: All access serialized through a dedicated queue
+class ThreadSafeService {
+    private let broadcaster = EventBroadcaster()
+    private let queue = DispatchQueue(label: "com.myapp.broadcaster")
+
+    func subscribe(to eventType: EventType, handler: @escaping EventHandler) -> EventSubscriberId {
+        queue.sync {
+            broadcaster.subscribe(to: eventType, handler: handler)
+        }
+    }
+
+    func broadcast(_ event: Event) {
+        queue.sync {
+            broadcaster.broadcast(event)
+        }
+    }
+
+    func unsubscribe(id: EventSubscriberId, from eventType: EventType) {
+        queue.sync {
+            _ = broadcaster.unsubscribe(id: id, from: eventType)
+        }
+    }
+}
+```
+
+**Option 2: Use main thread for all broadcaster operations**
+
+```swift
+// ✅ Safe: All operations on main thread
+class MainThreadService: EventBroadcaster {
+    override func subscribe(to eventType: EventType, handler: @escaping EventHandler) -> EventSubscriberId {
+        assert(Thread.isMainThread, "Must be called on main thread")
+        return super.subscribe(to: eventType, handler: handler)
+    }
+
+    override func broadcast(_ event: Event) {
+        if Thread.isMainThread {
+            super.broadcast(event)
+        } else {
+            DispatchQueue.main.async {
+                super.broadcast(event)
+            }
+        }
+    }
+}
+```
+
+**Option 3: Subscribe once at setup, broadcast from anywhere**
+
+If subscriptions are established during initialization and never change, you only need to synchronize broadcasts:
+
+```swift
+// ✅ Safe: Static subscriptions, synchronized broadcasts
+class StaticSubscriptionService {
+    private let broadcaster: EventBroadcaster
+    private let broadcastQueue = DispatchQueue(label: "com.myapp.broadcast")
+
+    init() {
+        broadcaster = EventBroadcaster()
+
+        // All subscriptions happen once during init (single-threaded)
+        _ = broadcaster.subscribe(to: "dataUpdated") { event in
+            // Handle event
+        }
+    }
+
+    func broadcast(_ event: Event) {
+        broadcastQueue.sync {
+            broadcaster.broadcast(event)
+        }
+    }
+}
+```
+
 ### Be Aware of Dispatch Contexts
 
 ```swift
@@ -223,7 +327,7 @@ service.subscribe(to: "event") { event in
     // This might not be on the main thread!
     // ❌ Don't do this:
     self.label.text = "Updated"
-    
+
     // ✅ Do this:
     DispatchQueue.main.async {
         self.label.text = "Updated"
@@ -238,11 +342,11 @@ service.subscribe(to: "event") { event in
 class SafeCounter {
     private let queue = DispatchQueue(label: "counter")
     private var _count = 0
-    
+
     var count: Int {
         queue.sync { _count }
     }
-    
+
     func increment() {
         queue.sync { _count += 1 }
     }
@@ -274,7 +378,7 @@ service.subscribe(to: "event") { event in
 ```swift
 class Service: EventBroadcaster {
     static let errorOccurred = Event.ET("errorOccurred")
-    
+
     func performOperation() {
         do {
             try riskyOperation()
@@ -301,14 +405,14 @@ class SyncDispatcher: EventDispatching {
 
 func testEventHandling() {
     let service = Service(eventDispatcher: SyncDispatcher())
-    
+
     var received: Event?
     service.subscribe(to: "test") { event in
         received = event
     }
-    
+
     service.broadcast(Event(eventType: "test"))
-    
+
     XCTAssertNotNil(received)  // Executes synchronously
 }
 ```
@@ -323,11 +427,11 @@ protocol EventService {
 
 class MockEventService: EventService {
     var broadcastedEvents: [Event] = []
-    
+
     func subscribe(to eventType: EventType, handler: @escaping EventHandler) -> EventSubscriberId {
         return 0
     }
-    
+
     func broadcast(_ event: Event) {
         broadcastedEvents.append(event)
     }
@@ -340,12 +444,12 @@ class MockEventService: EventService {
 func testEventOrder() {
     let service = EventBroadcaster(eventDispatcher: SyncDispatcher())
     var received: [String] = []
-    
+
     service.subscribe(to: "test") { _ in received.append("first") }
     service.subscribe(to: "test") { _ in received.append("second") }
-    
+
     service.broadcast(Event(eventType: "test"))
-    
+
     XCTAssertEqual(received, ["first", "second"])
 }
 ```
@@ -367,7 +471,7 @@ service.enableDebugLogging()
 func checkHealth() {
     let stats = service.statistics()
     let count = stats["totalSubscribers"] as? Int ?? 0
-    
+
     if count > 100 {
         logger.warning("High subscriber count: \(count)")
     }
@@ -379,12 +483,12 @@ func checkHealth() {
 ```swift
 class MyEvent: Event {
     let data: MyData
-    
+
     init(data: MyData) {
         self.data = data
         super.init(eventType: MyEvent.ET("dataChanged"))
     }
-    
+
     // Add for better debugging
     var debugDescription: String {
         "MyEvent(data: \(data))"

@@ -7,15 +7,16 @@
 
 import Foundation
 
-// @brief Extension to EventBroadcaster that provides async/await support
-// for event subscription using AsyncStream.
+/// Extension to `EventBroadcaster` that provides async/await support
+/// for event subscription using `AsyncStream`.
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension EventBroadcaster {
-  // @brief Creates an AsyncStream that yields events of the specified type.
-  // The stream will continue until it is cancelled or the broadcaster is
-  // deallocated.
-  // @param eventType The type of events to stream
-  // @return An AsyncStream that yields Events matching the specified type
+  /// Creates an `AsyncStream` that yields events of the specified type.
+  ///
+  /// The stream will continue until it is cancelled or the broadcaster is deallocated.
+  ///
+  /// - Parameter eventType: The type of events to stream.
+  /// - Returns: An `AsyncStream` that yields events matching the specified type.
   public func events(for eventType: EventType) -> AsyncStream<Event> {
     AsyncStream { continuation in
       let subscriberId = self.subscribe(to: eventType) { event in
@@ -28,9 +29,10 @@ extension EventBroadcaster {
     }
   }
 
-  // @brief Waits for the next event of the specified type.
-  // @param eventType The type of event to wait for
-  // @return The next Event of the specified type
+  /// Waits for the next event of the specified type.
+  ///
+  /// - Parameter eventType: The type of event to wait for.
+  /// - Returns: The next event of the specified type.
   public func nextEvent(for eventType: EventType) async -> Event {
     await withCheckedContinuation { continuation in
       var hasResumed = false

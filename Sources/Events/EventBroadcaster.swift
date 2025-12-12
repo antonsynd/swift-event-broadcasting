@@ -7,54 +7,70 @@
 
 import Foundation
 
-// @brief An event handler, that subscribes to an event type and is invoked
-// when its event broadcaster broadcasts an event with that type.
+/// An event handler that subscribes to an event type and is invoked
+/// when its event broadcaster broadcasts an event with that type.
 public typealias EventHandler = (Event) -> Void
 
-// @brief A subscriber id, returned by certain methods that subscribe an
-// event handler to an event broadcaster. When a handler has been subscribed
-// with an associated subscriber id, the subscriber id must be used to
-// unsubscribe the handler.
+/// A subscriber ID returned by certain methods that subscribe an
+/// event handler to an event broadcaster. When a handler has been subscribed
+/// with an associated subscriber ID, that ID must be used to unsubscribe the handler.
 public typealias EventSubscriberId = UInt
 
-// @brief Protocol that allows a class or struct to provide event broadcasting
-// capabilities by keeping an internal instance of EventBroadcaster and
-// delegating the protocol methods to that instance.
+/// Protocol that allows a class or struct to provide event broadcasting
+/// capabilities by keeping an internal instance of `EventBroadcaster` and
+/// delegating the protocol methods to that instance.
 public protocol EventBroadcasting {
-  // @brief Subscribes @p handler to @p eventType, returning a new subscriber
-  // id. The subscriber id must be used to unsubscribe the handler.
+  /// Subscribes a handler to an event type, returning a new subscriber ID.
+  ///
+  /// - Parameters:
+  ///   - eventType: The type of event to subscribe to.
+  ///   - handler: The handler to invoke when the event is broadcast.
+  /// - Returns: A subscriber ID that must be used to unsubscribe the handler.
   func subscribe(to eventType: EventType, handler: @escaping EventHandler)
     -> EventSubscriberId
 
-  // @brief Subscribes @p handler to @p eventType using @p subscriber as
-  // an opaque proxy for the subscriber id. @p subscriber must be used to
-  // unsubscribe the handler.
+  /// Subscribes a handler to an event type using an object as a proxy for the subscriber ID.
+  ///
+  /// - Parameters:
+  ///   - subscriber: An opaque object to associate with this subscription.
+  ///   - eventType: The type of event to subscribe to.
+  ///   - handler: The handler to invoke when the event is broadcast.
   func subscribe(
     _ subscriber: AnyHashable,
     to eventType: EventType,
     with handler: @escaping EventHandler
   )
 
-  // @brief Unsubscribes all handlers for @p eventType associated with
-  // @p subscriber. Returns true if any handlers were unsubscribed, false
-  // otherwise.
+  /// Unsubscribes all handlers for an event type associated with a subscriber.
+  ///
+  /// - Parameters:
+  ///   - subscriber: The subscriber object whose handlers should be removed.
+  ///   - eventType: The event type to unsubscribe from.
+  /// - Returns: `true` if any handlers were unsubscribed, `false` otherwise.
   func unsubscribe(subscriber: AnyHashable, from eventType: EventType)
     -> Bool
 
-  // @brief Unsubscribes the handler for @p subscriberId from @p eventType.
-  // Returns true if a handler was unsubscribed, false otherwise.
+  /// Unsubscribes the handler for a subscriber ID from an event type.
+  ///
+  /// - Parameters:
+  ///   - subscriberId: The subscriber ID returned from `subscribe(to:handler:)`.
+  ///   - eventType: The event type to unsubscribe from.
+  /// - Returns: `true` if a handler was unsubscribed, `false` otherwise.
   func unsubscribe(
     id subscriberId: EventSubscriberId,
     from eventType: EventType
   )
     -> Bool
 
-  // @brief Broadcasts @p event to all handlers subscribed to
-  // @p event.eventType. Handlers are executed in subscription order.
+  /// Broadcasts an event to all handlers subscribed to its event type.
+  ///
+  /// Handlers are executed in subscription order.
+  ///
+  /// - Parameter event: The event to broadcast.
   func broadcast(_ event: Event)
 }
 
-// @brief Base class that can be subclassed directly.
+/// Base class that can be subclassed directly to provide event broadcasting capabilities.
 open class EventBroadcaster: EventBroadcasting {
   internal var typeToSubscribers: [EventType: EventSubscribers] = [:]
   internal var typeToObjectSubscribers: [EventType: ObjectSubscribers] = [:]
